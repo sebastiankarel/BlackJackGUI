@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 
+# Settings
+num_players = 1
+
 height = 600
 width = 800
 
@@ -25,9 +28,12 @@ ty2 = int(ty1 + table_height)
 cv2.rectangle(img, (tx1, ty1), (tx2, ty2), table_color, -1)
 
 # draw players
+center_players = int((width / 2) - (player_radius / 2))
 py_center = ty2 + player_table_offset + player_radius
-px_center = int(width / 2)
-cv2.circle(img, (px_center, py_center), player_radius, player_color, -1)
+players_width = num_players * 2 * player_radius
+for i in range(num_players):
+    px_center = int(tx1 + (players_width / 2) / 2 + (table_width - players_width) / 2)
+    cv2.circle(img, (px_center, py_center), player_radius, player_color, -1)
 
 cv2.imshow('BlackJack', img)
 cv2.waitKey(0)
