@@ -43,16 +43,19 @@ players_width = max_num_players * 2 * player_radius
 for i in range(max_num_players):
     px_center = int((i * (player_radius * 2 + player_x_margin)) + int(tx1 + player_radius))
     if i < num_players:
-        if i == (player_current_turn - 1):
+        if i == player_current_turn:
             cv2.circle(img, (px_center, py_center), player_radius, player_color_current_turn, -1)
         else:
             cv2.circle(img, (px_center, py_center), player_radius, player_color, -1)
     else:
         cv2.circle(img, (px_center, py_center), player_radius, player_color_inactive, -1)
-
-# Draw text
-cv2.putText(img, 'Hello World!', (tx1, ty2), font, 0.5, font_color, line_type)
-
+    cv2.putText(img, str(i), (px_center - 10, py_center + 10), font, 1, font_color, line_type)
+    # Draw totals
+    total = 20
+    if total < 10:
+        cv2.putText(img, str(total), (px_center - 10, ty2 - 10), font, 1, font_color, line_type)
+    else:
+        cv2.putText(img, str(total), (px_center - 20, ty2 - 10), font, 1, font_color, line_type)
 
 cv2.imshow('BlackJack', img)
 cv2.waitKey(0)
