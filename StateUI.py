@@ -1,11 +1,6 @@
 import cv2
 import numpy as np
 
-# Values from game state
-num_players = 3
-player_current_turn = 2
-player_totals = np.random.randint(0, 100, 10)
-
 # Settings
 max_num_players = 10
 
@@ -53,7 +48,7 @@ def draw_table(img):
     return tx1, ty2
 
 
-def draw_total(img, px_center, ty2, player_no):
+def draw_total(img, px_center, ty2, player_no, player_totals):
     total = player_totals[player_no]
     if total < 10:
         cv2.putText(img, str(total), (px_center - 10, ty2 - 10), font, 1, font_color, line_type)
@@ -61,25 +56,25 @@ def draw_total(img, px_center, ty2, player_no):
         cv2.putText(img, str(total), (px_center - 20, ty2 - 10), font, 1, font_color, line_type)
 
 
-def draw_players(img, tx1, ty2):
+def draw_players(img, tx1, ty2, player_totals, num_players, current_player):
     player_x_margin = 40
     py_center = ty2 + player_table_offset + player_radius
     for i in range(max_num_players):
         px_center = int((i * (player_radius * 2 + player_x_margin)) + int(tx1 + player_radius))
         if i < num_players:
-            if i == player_current_turn:
+            if i == current_player:
                 cv2.circle(img, (px_center, py_center), player_radius, player_color_current_turn, -1)
             else:
                 cv2.circle(img, (px_center, py_center), player_radius, player_color, -1)
         else:
             cv2.circle(img, (px_center, py_center), player_radius, player_color_inactive, -1)
         cv2.putText(img, str(i), (px_center - 10, py_center + 10), font, 1, font_color, line_type)
-        draw_total(img, px_center, ty2, i)
+        draw_total(img, px_center, ty2, i, player_totals)
 
 
 image = blank_image()
 table_x, table_y = draw_table(image)
-draw_players(image, table_x, table_y)
+draw_players(image, table_x, table_y, np.random.randint(0, 100, 10), 5, 2)
 
 cv2.imshow('BlackJack', image)
 cv2.waitKey(0)
