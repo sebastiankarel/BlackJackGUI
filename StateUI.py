@@ -31,10 +31,10 @@ card_font_color_red = (0, 0, 255)
 card_text_x_offset = 5
 card_text_y_offset = 5
 card_font_scale = 0.5
-clubs_img = cv2.imread('res\\clubs.jpg')
-spades_img = cv2.imread('res\\spades.jpg')
-hearts_img = cv2.imread('res\\hearts.jpg')
-diamonds_img = cv2.imread('res\\diamonds.jpg')
+clubs_img = cv2.resize(cv2.imread('res\\clubs.jpg'), (20, 25))
+spades_img = cv2.resize(cv2.imread('res\\spades.jpg'), (20, 25))
+hearts_img = cv2.resize(cv2.imread('res\\hearts.jpg'), (20, 25))
+diamonds_img = cv2.resize(cv2.imread('res\\diamonds.jpg'), (20, 25))
 
 
 def blank_image():
@@ -76,17 +76,26 @@ def draw_players(img, table_x, table_y, player_totals, num_players, current_play
         draw_total(img, px_center, table_y, i, player_totals)
 
 
-def draw_card(img, x, y, color, value):
+def draw_card(img, x, y, value, suit):
     cv2.rectangle(img, (x, y), (x + card_width, y + card_height), (255, 255, 255), -1)
-    cv2.putText(img, 'A', (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
-    # Draw icons
-
+    if suit == 1:
+        cv2.putText(img, value, (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
+        img[y+3:y+3+spades_img.shape[0], x+17:x+17+spades_img.shape[1]] = spades_img
+    elif suit == 2:
+        cv2.putText(img, value, (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
+        img[y + 3:y + 3 + hearts_img.shape[0], x + 17:x + 17 + hearts_img.shape[1]] = hearts_img
+    elif suit == 3:
+        cv2.putText(img, value, (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
+        img[y + 3:y + 3 + diamonds_img.shape[0], x + 17:x + 17 + diamonds_img.shape[1]] = diamonds_img
+    else:
+        cv2.putText(img, value, (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
+        img[y + 3:y + 3 + clubs_img.shape[0], x + 17:x + 17 + clubs_img.shape[1]] = clubs_img
 
 
 image = blank_image()
 tx, ty = draw_table(image)
 draw_players(image, tx, ty, np.random.randint(0, 100, 10), 5, 2)
-draw_card(image, int(tx + table_width / 2), int(ty - table_height / 2), 0, 0)
+draw_card(image, int(tx + table_width / 2), int(ty - table_height / 2), 'A', 4)
 
 cv2.imshow('BlackJack', image)
 cv2.waitKey(0)
