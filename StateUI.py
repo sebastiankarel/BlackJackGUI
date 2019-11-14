@@ -76,9 +76,11 @@ def draw_players(img, table_x, table_y, player_totals, num_players, current_play
         draw_total(img, px_center, table_y, i, player_totals)
 
 
-def getCardValues(code):
+def get_card_value_string(code):
     if code == 1:
         return 'A'
+    elif code == 10:
+        return 'T'
     elif code == 11:
         return 'J'
     elif code == 12:
@@ -94,28 +96,38 @@ def getCardValues(code):
 def draw_card(img, x, y, value, suit):
     cv2.rectangle(img, (x, y), (x + card_width, y + card_height), (255, 255, 255), -1)
     if suit == 1:
-        cv2.putText(img, getCardValues(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
+        cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
         img[y+3:y+3+spades_img.shape[0], x+17:x+17+spades_img.shape[1]] = spades_img
     elif suit == 2:
-        cv2.putText(img, getCardValues(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
+        cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
         img[y + 3:y + 3 + hearts_img.shape[0], x + 17:x + 17 + hearts_img.shape[1]] = hearts_img
     elif suit == 3:
-        cv2.putText(img, getCardValues(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
+        cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 255), line_type)
         img[y + 3:y + 3 + diamonds_img.shape[0], x + 17:x + 17 + diamonds_img.shape[1]] = diamonds_img
     elif suit == 4:
-        cv2.putText(img, getCardValues(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
+        cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
         img[y + 3:y + 3 + clubs_img.shape[0], x + 17:x + 17 + clubs_img.shape[1]] = clubs_img
-    else:
-        cv2.putText(img, getCardValues(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
+    elif suit == 255:
+        cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
 
 
-image = blank_image()
-tx, ty = draw_table(image)
-draw_players(image, tx, ty, np.random.randint(0, 100, 10), 5, 2)
-draw_card(image, int(tx + table_width / 2), int(ty - table_height / 2), 11, 2)
+def draw_cards(image, table_x, table_y, num_players):
+    player_x_margin = 40
+    py_center = table_y + player_table_offset + player_radius
+    for i in range(num_players):
+        px_center = int((i * (player_radius * 2 + player_x_margin)) + int(table_x + player_radius))
+        draw_card(image, int(px_center - card_width / 2), py_center - 150, np.random.randint(1, 14), np.random.randint(1, 5))
 
-cv2.imshow('BlackJack', image)
-cv2.waitKey(0)
 
-cv2.destroyAllWindows()
+def draw_game_state(num_players, current_player, player_total_values):
+    image = blank_image()
+    tx, ty = draw_table(image)
+    draw_players(image, tx, ty, player_total_values, num_players, current_player)
+    # Draw all player cards in loop
+    draw_cards(image, tx, ty, num_players)
+    cv2.imshow('BlackJack', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
+
+draw_game_state(6, 3, np.random.randint(0, 100, 10))
