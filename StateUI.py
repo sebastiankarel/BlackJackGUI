@@ -112,24 +112,26 @@ def draw_card(img, x, y, value, suit):
         cv2.putText(img, get_card_value_string(value), (x + card_text_x_offset, y + card_height - card_text_y_offset), font, 1, (0, 0, 0), line_type)
 
 
-def draw_cards(image, table_x, table_y, num_players):
+def draw_cards(image, table_x, table_y, num_players, player_cards):
     player_x_margin = 40
     py_center = table_y + player_table_offset + player_radius
     for i in range(num_players):
         px_center = int((i * (player_radius * 2 + player_x_margin)) + int(table_x + player_radius))
-        for j in range(5):
+        for j in range(3):  # MUST CHECK NUMBER OF CARDS FOR EACH PLAYER, PERHAPS FILL WITH ZERO
             draw_card(image, int(px_center - card_width / 2) - j * 20, py_center - 150 - j * 30, np.random.randint(1, 14), np.random.randint(1, 5))
 
 
-def draw_game_state(num_players, current_player, player_total_values):
+def draw_game_state(num_players, current_player, player_total_values, player_cards):
     image = blank_image()
     tx, ty = draw_table(image)
     draw_players(image, tx, ty, player_total_values, num_players, current_player)
-    # Draw all player cards in loop
-    draw_cards(image, tx, ty, num_players)
+    draw_cards(image, tx, ty, num_players, player_cards)
     cv2.imshow('BlackJack', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-draw_game_state(6, 3, np.random.randint(0, 100, 10))
+num_players = 6
+current_player = 3
+player_totals = np.random.randint(0, 100, 10)
+draw_game_state(num_players, current_player, player_totals, np.ones((num_players, 5)))
