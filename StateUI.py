@@ -48,6 +48,7 @@ def draw_table(img):
     ty1 = table_y_offset
     tx2 = int(tx1 + table_width)
     ty2 = int(ty1 + table_height)
+    cv2.rectangle(img, (0, ty1), (width, ty2), table_color, -1)
     cv2.rectangle(img, (tx1, ty1), (tx2, ty2), table_color, -1)
     return tx1, ty2
 
@@ -116,7 +117,8 @@ def draw_cards(image, table_x, table_y, num_players):
     py_center = table_y + player_table_offset + player_radius
     for i in range(num_players):
         px_center = int((i * (player_radius * 2 + player_x_margin)) + int(table_x + player_radius))
-        draw_card(image, int(px_center - card_width / 2), py_center - 150, np.random.randint(1, 14), np.random.randint(1, 5))
+        for j in range(5):
+            draw_card(image, int(px_center - card_width / 2) - j * 20, py_center - 150 - j * 30, np.random.randint(1, 14), np.random.randint(1, 5))
 
 
 def draw_game_state(num_players, current_player, player_total_values):
