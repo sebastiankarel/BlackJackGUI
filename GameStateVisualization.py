@@ -147,6 +147,11 @@ class Visualizer:
         self.__draw_dealer(image, tx, dealer_total, dealer_cards)
         cv2.imshow('BlackJack', image)
         cv2.waitKey(5000)
+        """
+        . players_total_values 1D array of length num_players
+        . player_cards: shape (num_players, max_num_cards, 2), cards[player][card][0] = value, cards[player][card][1] = suit
+        . dealer_cards: shape (num_cards, 2)
+        """
 
     @staticmethod
     def end():
