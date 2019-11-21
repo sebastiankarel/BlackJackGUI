@@ -117,8 +117,9 @@ def draw_cards(image, table_x, table_y, num_players, player_cards):
     py_center = table_y + player_table_offset + player_radius
     for i in range(num_players):
         px_center = int((i * (player_radius * 2 + player_x_margin)) + int(table_x + player_radius))
-        for j in range(3):  # MUST CHECK NUMBER OF CARDS FOR EACH PLAYER, PERHAPS FILL WITH ZERO
-            draw_card(image, int(px_center - card_width / 2) - j * 20, py_center - 150 - j * 30, np.random.randint(1, 14), np.random.randint(1, 5))
+        for j in range(len(player_cards[i])):
+            if player_cards[i][j][0] > 0 and j < 8:
+                draw_card(image, int(px_center - card_width / 2) - j * 20, py_center - 150 - j * 30, player_cards[i][j][0], player_cards[i][j][1])
 
 
 def draw_game_state(num_players, current_player, player_total_values, player_cards):
@@ -134,4 +135,5 @@ def draw_game_state(num_players, current_player, player_total_values, player_car
 num_players = 6
 current_player = 3
 player_totals = np.random.randint(0, 100, 10)
-draw_game_state(num_players, current_player, player_totals, np.ones((num_players, 5)))
+player_cards = np.ones((num_players, 10, 2))
+draw_game_state(num_players, current_player, player_totals, player_cards)
